@@ -7,7 +7,6 @@ import java.util.List;
 
 public interface AccountBalanceRepository extends JpaRepository<AccountBalance, Long> {
     List<AccountBalance> findByPeriodOrderByAccountCodeAsc(String period);
-    List<AccountBalance> findByBatchId(Long batchId);
 
     @Modifying
     void deleteByPeriod(String period);

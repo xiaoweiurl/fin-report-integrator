@@ -40,6 +40,7 @@ public class AuthController {
         return new LoginResponse(token, user.getUsername(), user.getDisplayName(), user.getRole());
     }
 
+    /** Public current-user stub for clients that persist the JWT. */
     @GetMapping("/me")
     public LoginResponse me(Authentication auth) {
         AppUser user = users.findByUsername(auth.getName())

@@ -23,7 +23,7 @@ export function setPeriod(period: string) {
   localStorage.setItem(PERIOD_KEY, period);
 }
 
-export class ApiError extends Error {
+class ApiError extends Error {
   status: number;
   constructor(status: number, message: string) {
     super(message);

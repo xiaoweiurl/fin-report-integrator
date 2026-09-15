@@ -1,0 +1,3 @@
+# Keep the Maven wrapper Unix script executable on Linux/macOS.
+backend/mvnw text eol=lf
+backend/mvnw.cmd text eol=crlf
