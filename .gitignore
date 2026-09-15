@@ -19,3 +19,8 @@ frontend/.turbo
 .vscode/
 .env
 .env.local
+
+# local source dumps
+*.zip
+fin-report-integrator-src.zip
+
