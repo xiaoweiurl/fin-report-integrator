@@ -1,0 +1,4 @@
+﻿科目编码,科目名称,类别,余额方向,上级编码
+1123,预付账款,ASSET,DEBIT,
+1408,委托加工物资,ASSET,DEBIT,
+2241,其他应付款,LIABILITY,CREDIT,

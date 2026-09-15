@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+:root {
+  --ios-bg: #f2f2f7;
+  --ios-card: #ffffff;
+  --ios-text: #000000;
+  --ios-secondary: #8e8e93;
+  --ios-separator: rgba(60, 60, 67, 0.12);
+  --ios-blue: #007aff;
+  --ios-green: #34c759;
+  --ios-red: #ff3b30;
+  --ios-orange: #ff9500;
+  --ios-fill: #e5e5ea;
+}
+
+@theme inline {
+  --color-ios-bg: var(--ios-bg);
+  --color-ios-card: var(--ios-card);
+  --color-ios-text: var(--ios-text);
+  --color-ios-secondary: var(--ios-secondary);
+  --color-ios-blue: var(--ios-blue);
+  --color-ios-green: var(--ios-green);
+  --color-ios-red: var(--ios-red);
+  --color-ios-orange: var(--ios-orange);
+  --color-ios-fill: var(--ios-fill);
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei",
+    "Helvetica Neue", sans-serif;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  background: var(--ios-bg);
+  color: var(--ios-text);
+  font-family: var(--font-sans);
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+.ios-shadow {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.pressable {
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.pressable:active {
+  transform: scale(0.97);
+  opacity: 0.86;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
