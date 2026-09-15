@@ -68,27 +68,12 @@ public class ReportService {
     }
 
     public FinancialReportDto generate(String reportType, String period) {
-        Map<String, BigDecimal> accountAmt = accountAmounts(period);
-        List<ReportFormula> fs = formulas.findByReportType(reportType);
-        Map<String, BigDecimal> itemAmounts = new LinkedHashMap<>();
-        for (ReportFormula f : fs) {
-            BigDecimal acc = accountAmt.getOrDefault(f.getAccountCode(), BigDecimal.ZERO);
-            BigDecimal add = acc.multiply(f.getMultiplier()).setScale(2, RoundingMode.HALF_UP);
-            itemAmounts.merge(f.getLineCode(), add, BigDecimal::add);
-        }
-        Map<String, BigDecimal> resolved = new LinkedHashMap<>();
+        Map<String, BigDecimal> amounts = resolveAmounts(reportType, accountAmounts(period));
         List<ReportLineDto> result = new ArrayList<>();
         for (ReportLine line : lines.findByReportTypeOrderBySortOrderAsc(reportType)) {
-            BigDecimal amt = BigDecimal.ZERO;
-            if ("HEADER".equals(line.getLineKind())) {
-                amt = null;
-            } else if ("ITEM".equals(line.getLineKind())) {
-                amt = itemAmounts.getOrDefault(line.getLineCode(), BigDecimal.ZERO);
-                resolved.put(line.getLineCode(), amt);
-            } else if ("TOTAL".equals(line.getLineKind())) {
-                amt = evalExpr(line.getFormulaExpr(), resolved);
-                resolved.put(line.getLineCode(), amt);
-            }
+            BigDecimal amt = "HEADER".equals(line.getLineKind())
+                    ? null
+                    : amounts.getOrDefault(line.getLineCode(), BigDecimal.ZERO);
             result.add(new ReportLineDto(
                     line.getLineCode(),
                     line.getLineName(),
@@ -99,6 +84,34 @@ public class ReportService {
             ));
         }
         return new FinancialReportDto(reportType, period, result);
+    }
+
+    /** Home KPIs without building full report line DTOs. Loads account balances once. */
+    public DashboardKpis dashboardKpis(String period) {
+        Map<String, BigDecimal> accountAmt = accountAmounts(period);
+        BigDecimal netProfit = resolveAmounts("INCOME_STATEMENT", accountAmt)
+                .getOrDefault("IS_NP", BigDecimal.ZERO);
+        BigDecimal totalAssets = resolveAmounts("BALANCE_SHEET", accountAmt)
+                .getOrDefault("BS_ASSET_T", BigDecimal.ZERO);
+        return new DashboardKpis(netProfit, totalAssets);
+    }
+
+    private Map<String, BigDecimal> resolveAmounts(String reportType, Map<String, BigDecimal> accountAmt) {
+        Map<String, BigDecimal> itemAmounts = new LinkedHashMap<>();
+        for (ReportFormula f : formulas.findByReportType(reportType)) {
+            BigDecimal acc = accountAmt.getOrDefault(f.getAccountCode(), BigDecimal.ZERO);
+            BigDecimal add = acc.multiply(f.getMultiplier()).setScale(2, RoundingMode.HALF_UP);
+            itemAmounts.merge(f.getLineCode(), add, BigDecimal::add);
+        }
+        Map<String, BigDecimal> resolved = new LinkedHashMap<>();
+        for (ReportLine line : lines.findByReportTypeOrderBySortOrderAsc(reportType)) {
+            if ("ITEM".equals(line.getLineKind())) {
+                resolved.put(line.getLineCode(), itemAmounts.getOrDefault(line.getLineCode(), BigDecimal.ZERO));
+            } else if ("TOTAL".equals(line.getLineKind())) {
+                resolved.put(line.getLineCode(), evalExpr(line.getFormulaExpr(), resolved));
+            }
+        }
+        return resolved;
     }
 
     private Map<String, BigDecimal> accountAmounts(String period) {
@@ -214,5 +227,8 @@ public class ReportService {
     }
 
     public record FinancialReportDto(String reportType, String period, List<ReportLineDto> lines) {
+    }
+
+    public record DashboardKpis(BigDecimal netProfit, BigDecimal totalAssets) {
     }
 }

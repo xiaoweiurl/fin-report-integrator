@@ -53,35 +53,29 @@ public class DashboardController {
                 : period;
         List<ImportBatch> list = batches.findByPeriodOrderByCreatedAtDesc(p);
         int errorRows = list.stream().mapToInt(b -> b.getErrorRows() == null ? 0 : b.getErrorRows()).sum();
-        var tb = reports.trialBalance(p);
-        int stmt = statements.findByPeriodOrderByTxnDateAscIdAsc(p).size();
-        int jour = journals.findByPeriodOrderByTxnDateAscIdAsc(p).size();
-        int match = matches.findByPeriodOrderByIdAsc(p).size();
-        BigDecimal netProfit = reports.generate("INCOME_STATEMENT", p).lines().stream()
-                .filter(l -> "IS_NP".equals(l.lineCode()))
-                .map(l -> l.amount() == null ? BigDecimal.ZERO : l.amount())
-                .findFirst()
-                .orElse(BigDecimal.ZERO);
-        BigDecimal totalAssets = reports.generate("BALANCE_SHEET", p).lines().stream()
-                .filter(l -> "BS_ASSET_T".equals(l.lineCode()))
-                .map(l -> l.amount() == null ? BigDecimal.ZERO : l.amount())
-                .findFirst()
-                .orElse(BigDecimal.ZERO);
+        BigDecimal closingDebit = nz(balances.sumClosingDebitByPeriod(p));
+        BigDecimal closingCredit = nz(balances.sumClosingCreditByPeriod(p));
+        long balanceCount = balances.countByPeriod(p);
+        var kpi = reports.dashboardKpis(p);
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("period", p);
         body.put("batches", list);
         body.put("batchCount", list.size());
         body.put("errorRows", errorRows);
-        body.put("trialBalanced", tb.balanced());
-        body.put("closingDebit", tb.closingDebit());
-        body.put("closingCredit", tb.closingCredit());
-        body.put("balanceCount", balances.findByPeriodOrderByAccountCodeAsc(p).size());
-        body.put("statementCount", stmt);
-        body.put("journalCount", jour);
-        body.put("reconMatchCount", match);
-        body.put("netProfit", netProfit);
-        body.put("totalAssets", totalAssets);
+        body.put("trialBalanced", closingDebit.compareTo(closingCredit) == 0);
+        body.put("closingDebit", closingDebit);
+        body.put("closingCredit", closingCredit);
+        body.put("balanceCount", balanceCount);
+        body.put("statementCount", statements.countByPeriod(p));
+        body.put("journalCount", journals.countByPeriod(p));
+        body.put("reconMatchCount", matches.countByPeriod(p));
+        body.put("netProfit", kpi.netProfit());
+        body.put("totalAssets", kpi.totalAssets());
         body.put("settings", settings.all());
         return body;
+    }
+
+    private static BigDecimal nz(BigDecimal v) {
+        return v == null ? BigDecimal.ZERO : v;
     }
 }

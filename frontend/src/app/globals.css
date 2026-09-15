@@ -37,6 +37,7 @@ body {
   color: var(--ios-text);
   font-family: var(--font-sans);
   min-height: 100%;
+  min-height: 100dvh;
 }
 
 body {
@@ -66,4 +67,49 @@ textarea {
 
 .tabular {
   font-variant-numeric: tabular-nums;
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ios-blue);
+  outline-offset: 3px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--ios-blue);
+  outline-offset: 3px;
+}
+
+button.bg-ios-blue:focus-visible,
+a.bg-ios-blue:focus-visible,
+button.bg-ios-green:focus-visible,
+button.bg-ios-red:focus-visible {
+  outline-color: #ffffff;
+  box-shadow: 0 0 0 3px var(--ios-blue);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pressable {
+    transition: none;
+  }
+
+  .pressable:active {
+    transform: none;
+    opacity: 1;
+  }
 }
