@@ -20,6 +20,7 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/imports")
@@ -44,7 +45,7 @@ public class ImportController {
 
     @GetMapping("/{id}")
     public Map<String, Object> detail(@PathVariable Long id) {
-        ImportBatch batch = batches.findById(id).orElseThrow(() -> ApiException.notFound("批次不存在"));
+        ImportBatch batch = batches.findById(Objects.requireNonNull(id)).orElseThrow(() -> ApiException.notFound("批次不存在"));
         List<ImportExceptionRow> rows = exceptions.findByBatchIdOrderByRowNumberAsc(id);
         return Map.of("batch", batch, "exceptions", rows);
     }
@@ -71,7 +72,7 @@ public class ImportController {
 
     @GetMapping("/{id}/exceptions/export")
     public void exportExceptions(@PathVariable Long id, HttpServletResponse response) throws IOException {
-        ImportBatch batch = batches.findById(id).orElseThrow(() -> ApiException.notFound("批次不存在"));
+        ImportBatch batch = batches.findById(Objects.requireNonNull(id)).orElseThrow(() -> ApiException.notFound("批次不存在"));
         List<ImportExceptionRow> rows = exceptions.findByBatchIdOrderByRowNumberAsc(id);
         response.setContentType("text/csv; charset=UTF-8");
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.attachment()

@@ -101,7 +101,7 @@ public class ReportService {
         for (ReportFormula f : formulas.findByReportType(reportType)) {
             BigDecimal acc = accountAmt.getOrDefault(f.getAccountCode(), BigDecimal.ZERO);
             BigDecimal add = acc.multiply(f.getMultiplier()).setScale(2, RoundingMode.HALF_UP);
-            itemAmounts.merge(f.getLineCode(), add, BigDecimal::add);
+            itemAmounts.merge(f.getLineCode(), add, (a, b) -> a.add(b));
         }
         Map<String, BigDecimal> resolved = new LinkedHashMap<>();
         for (ReportLine line : lines.findByReportTypeOrderBySortOrderAsc(reportType)) {
