@@ -6,5 +6,4 @@ import java.util.List;
 
 public interface ImportExceptionRepository extends JpaRepository<ImportExceptionRow, Long> {
     List<ImportExceptionRow> findByBatchIdOrderByRowNumberAsc(Long batchId);
-    long countByBatchId(Long batchId);
 }

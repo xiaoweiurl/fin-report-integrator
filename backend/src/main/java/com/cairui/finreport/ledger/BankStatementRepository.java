@@ -8,6 +8,8 @@ import java.util.List;
 public interface BankStatementRepository extends JpaRepository<BankStatementLine, Long> {
     List<BankStatementLine> findByPeriodOrderByTxnDateAscIdAsc(String period);
 
+    long countByPeriod(String period);
+
     @Modifying
     void deleteByPeriod(String period);
 }

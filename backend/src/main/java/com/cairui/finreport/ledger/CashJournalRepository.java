@@ -8,6 +8,8 @@ import java.util.List;
 public interface CashJournalRepository extends JpaRepository<CashJournalLine, Long> {
     List<CashJournalLine> findByPeriodOrderByTxnDateAscIdAsc(String period);
 
+    long countByPeriod(String period);
+
     @Modifying
     void deleteByPeriod(String period);
 }

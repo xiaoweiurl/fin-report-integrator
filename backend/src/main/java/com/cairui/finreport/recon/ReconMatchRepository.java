@@ -8,6 +8,8 @@ import java.util.List;
 public interface ReconMatchRepository extends JpaRepository<ReconMatch, Long> {
     List<ReconMatch> findByPeriodOrderByIdAsc(String period);
 
+    long countByPeriod(String period);
+
     @Modifying
     void deleteByPeriod(String period);
 }

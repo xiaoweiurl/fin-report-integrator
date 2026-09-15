@@ -58,7 +58,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-ios-bg pb-24 md:pb-8 md:pl-[240px]">
+    <div className="min-h-screen bg-ios-bg pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] md:pb-8 md:pl-[240px]">
       <aside className="hidden md:flex fixed inset-y-0 left-0 w-[240px] flex-col border-r border-black/5 bg-white/70 backdrop-blur-2xl">
         <div className="px-6 pt-8 pb-6">
           <div className="text-[13px] font-semibold tracking-[0.18em] text-ios-blue">CAIRUI</div>
@@ -91,7 +91,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
         </button>
       </aside>
 
-      <header className="sticky top-0 z-20 bg-ios-bg/75 backdrop-blur-xl border-b border-black/[0.06]">
+      <header className="sticky top-0 z-20 bg-ios-bg/75 backdrop-blur-xl border-b border-black/[0.06] pt-safe">
         <div className="max-w-5xl mx-auto px-4 md:px-8 h-14 flex items-center justify-between">
           <div className="md:hidden text-[17px] font-semibold">财报系统</div>
           <div className="hidden md:block text-[13px] text-ios-secondary">会计期间</div>

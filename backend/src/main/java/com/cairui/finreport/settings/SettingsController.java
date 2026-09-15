@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+/** Public settings API (period / recon tolerance); current UI stores period locally. */
 @RestController
 @RequestMapping("/api/settings")
 public class SettingsController {

@@ -31,7 +31,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-ios-bg flex items-center justify-center px-6">
+    <div className="min-h-screen bg-ios-bg flex items-center justify-center px-6 pt-safe pb-safe">
       <div className="w-full max-w-[400px]">
         <div className="text-center mb-8">
           <div className="mx-auto mb-5 h-16 w-16 rounded-[22px] bg-ios-blue text-white flex items-center justify-center text-[28px] font-bold ios-shadow">
