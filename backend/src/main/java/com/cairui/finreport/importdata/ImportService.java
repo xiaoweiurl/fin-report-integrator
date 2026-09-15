@@ -188,8 +188,12 @@ public class ImportService {
         batch.setErrorRows(err);
         String extra = "";
         if (importType.equals(ACCOUNT_BALANCE) && !balBuf.isEmpty()) {
-            BigDecimal d = balBuf.stream().map(AccountBalance::getClosingDebit).reduce(BigDecimal.ZERO, BigDecimal::add);
-            BigDecimal c = balBuf.stream().map(AccountBalance::getClosingCredit).reduce(BigDecimal.ZERO, BigDecimal::add);
+            BigDecimal d = BigDecimal.ZERO;
+            BigDecimal c = BigDecimal.ZERO;
+            for (AccountBalance row : balBuf) {
+                d = d.add(row.getClosingDebit() == null ? BigDecimal.ZERO : row.getClosingDebit());
+                c = c.add(row.getClosingCredit() == null ? BigDecimal.ZERO : row.getClosingCredit());
+            }
             if (d.compareTo(c) != 0) {
                 extra = " 试算不平衡：期末借方 " + d + " ≠ 贷方 " + c;
             } else {

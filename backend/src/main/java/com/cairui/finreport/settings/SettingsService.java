@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class SettingsService {
@@ -18,12 +19,12 @@ public class SettingsService {
     }
 
     public String get(String key, String fallback) {
-        return repo.findById(key).map(AppSetting::getValue).orElse(fallback);
+        return repo.findById(Objects.requireNonNull(key)).map(s -> s.getValue()).orElse(fallback);
     }
 
     @Transactional
     public void put(String key, String value) {
-        AppSetting s = repo.findById(key).orElseGet(() -> {
+        AppSetting s = repo.findById(Objects.requireNonNull(key)).orElseGet(() -> {
             AppSetting n = new AppSetting();
             n.setKey(key);
             return n;

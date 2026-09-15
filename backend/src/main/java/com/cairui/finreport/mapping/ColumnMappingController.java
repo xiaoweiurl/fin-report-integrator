@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/mappings")
@@ -31,14 +32,14 @@ public class ColumnMappingController {
 
     @PutMapping("/{id}")
     public ColumnMapping update(@PathVariable Long id, @RequestBody Map<String, String> body, Authentication auth) {
-        ColumnMapping m = repo.findById(id).orElseThrow(() -> ApiException.notFound("映射不存在"));
+        ColumnMapping m = repo.findById(Objects.requireNonNull(id)).orElseThrow(() -> ApiException.notFound("映射不存在"));
         if (body.containsKey("name")) {
             m.setName(body.get("name"));
         }
         if (body.containsKey("mappingJson")) {
             m.setMappingJson(body.get("mappingJson"));
         }
-        ColumnMapping saved = repo.save(m);
+        ColumnMapping saved = repo.save(Objects.requireNonNull(m));
         audit.log("MAPPING_UPDATE", "MAPPING", String.valueOf(id), m.getImportType(), auth.getName());
         return saved;
     }

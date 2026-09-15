@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/partners")
@@ -38,24 +39,24 @@ public class PartnerController {
             throw ApiException.badRequest("往来编码已存在");
         }
         Partner p = toEntity(new Partner(), req);
-        Partner saved = repo.save(p);
+        Partner saved = repo.save(Objects.requireNonNull(p));
         audit.log("PARTNER_CREATE", "PARTNER", saved.getCode(), saved.getName(), auth.getName());
         return saved;
     }
 
     @PutMapping("/{id}")
     public Partner update(@PathVariable Long id, @Valid @RequestBody PartnerReq req, Authentication auth) {
-        Partner p = repo.findById(id).orElseThrow(() -> ApiException.notFound("往来单位不存在"));
+        Partner p = repo.findById(Objects.requireNonNull(id)).orElseThrow(() -> ApiException.notFound("往来单位不存在"));
         toEntity(p, req);
-        Partner saved = repo.save(p);
+        Partner saved = repo.save(Objects.requireNonNull(p));
         audit.log("PARTNER_UPDATE", "PARTNER", saved.getCode(), saved.getName(), auth.getName());
         return saved;
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id, Authentication auth) {
-        Partner p = repo.findById(id).orElseThrow(() -> ApiException.notFound("往来单位不存在"));
-        repo.delete(p);
+        Partner p = repo.findById(Objects.requireNonNull(id)).orElseThrow(() -> ApiException.notFound("往来单位不存在"));
+        repo.delete(Objects.requireNonNull(p));
         audit.log("PARTNER_DELETE", "PARTNER", p.getCode(), p.getName(), auth.getName());
     }
 

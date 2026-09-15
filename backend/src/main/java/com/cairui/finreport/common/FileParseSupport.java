@@ -38,7 +38,8 @@ public final class FileParseSupport {
     }
 
     public static List<Map<String, String>> parse(MultipartFile file, byte[] bytes) throws IOException {
-        String name = file.getOriginalFilename() == null ? "" : file.getOriginalFilename().toLowerCase(Locale.ROOT);
+        String original = file.getOriginalFilename();
+        String name = original == null ? "" : original.toLowerCase(Locale.ROOT);
         if (name.endsWith(".xlsx") || name.endsWith(".xls")) {
             return parseExcel(bytes);
         }

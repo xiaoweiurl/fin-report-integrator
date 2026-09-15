@@ -117,18 +117,18 @@ public class ReconService {
                 .findFirst()
                 .orElse(BigDecimal.ZERO);
         BigDecimal bankInUnmatched = unmatchedBank.stream().filter(s -> "IN".equals(s.getDirection()))
-                .map(BankStatementLine::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+                .map(s -> nz(s.getAmount())).reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
         BigDecimal bankOutUnmatched = unmatchedBank.stream().filter(s -> "OUT".equals(s.getDirection()))
-                .map(BankStatementLine::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+                .map(s -> nz(s.getAmount())).reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
         BigDecimal bookInUnmatched = unmatchedBook.stream().filter(s -> "IN".equals(s.getDirection()))
-                .map(CashJournalLine::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+                .map(s -> nz(s.getAmount())).reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
         BigDecimal bookOutUnmatched = unmatchedBook.stream().filter(s -> "OUT".equals(s.getDirection()))
-                .map(CashJournalLine::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+                .map(s -> nz(s.getAmount())).reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
         BigDecimal adjustedBook = book.add(bankInUnmatched).subtract(bankOutUnmatched);
         BigDecimal bankStmtBal = stmts.stream()
                 .filter(s -> s.getBalanceAfter() != null)
-                .max(Comparator.comparing(BankStatementLine::getTxnDate).thenComparing(BankStatementLine::getId))
-                .map(BankStatementLine::getBalanceAfter)
+                .max(Comparator.comparing((BankStatementLine s) -> s.getTxnDate()).thenComparing(s -> s.getId()))
+                .map(s -> s.getBalanceAfter())
                 .orElse(adjustedBook.subtract(bookInUnmatched).add(bookOutUnmatched));
         BigDecimal adjustedBank = bankStmtBal.add(bookInUnmatched).subtract(bookOutUnmatched);
         boolean tied = adjustedBook.compareTo(adjustedBank) == 0;
