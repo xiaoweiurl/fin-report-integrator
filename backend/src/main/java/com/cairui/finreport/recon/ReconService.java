@@ -83,9 +83,15 @@ public class ReconService {
                 created.add(m);
             }
         }
-        statements.saveAll(stmts);
-        journals.saveAll(jours);
-        matches.saveAll(created);
+        for (BankStatementLine s : stmts) {
+            statements.update(s);
+        }
+        for (CashJournalLine j : jours) {
+            journals.update(j);
+        }
+        for (ReconMatch m : created) {
+            matches.insert(m);
+        }
         audit.log("RECON_RUN", "RECON", period, "自动匹配 " + created.size() + " 笔，容差 ±" + tol + " 天", username);
         return view(period);
     }
