@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cairui.finreport.audit.AuditLogRepository">
+    <select id="page" resultType="com.cairui.finreport.audit.AuditLog">
+        SELECT * FROM audit_logs ORDER BY created_at DESC LIMIT #{limit} OFFSET #{offset}
+    </select>
+    <select id="count" resultType="long">SELECT COUNT(*) FROM audit_logs</select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO audit_logs (action, entity_type, entity_id, detail, username, created_at)
+        VALUES (#{action}, #{entityType}, #{entityId}, #{detail}, #{username}, COALESCE(#{createdAt}, NOW()))
+    </insert>
+</mapper>

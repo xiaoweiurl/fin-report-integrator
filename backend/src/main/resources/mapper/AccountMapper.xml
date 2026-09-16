@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cairui.finreport.master.AccountRepository">
+    <select id="findAll" resultType="com.cairui.finreport.master.Account">
+        SELECT * FROM accounts ORDER BY code
+    </select>
+    <select id="findAllByOrderByCodeAsc" resultType="com.cairui.finreport.master.Account">
+        SELECT * FROM accounts ORDER BY code
+    </select>
+    <select id="findById" resultType="com.cairui.finreport.master.Account">
+        SELECT * FROM accounts WHERE id = #{id}
+    </select>
+    <select id="findByCode" resultType="com.cairui.finreport.master.Account">
+        SELECT * FROM accounts WHERE code = #{code}
+    </select>
+    <select id="existsByCode" resultType="boolean">
+        SELECT EXISTS(SELECT 1 FROM accounts WHERE code = #{code})
+    </select>
+    <select id="count" resultType="long">SELECT COUNT(*) FROM accounts</select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO accounts (code, name, category, balance_side, parent_code, level_no, enabled)
+        VALUES (#{code}, #{name}, #{category}, #{balanceSide}, #{parentCode}, COALESCE(#{levelNo}, 1), COALESCE(#{enabled}, TRUE))
+    </insert>
+    <update id="update">
+        UPDATE accounts SET code=#{code}, name=#{name}, category=#{category}, balance_side=#{balanceSide},
+            parent_code=#{parentCode}, level_no=#{levelNo}, enabled=#{enabled}
+        WHERE id=#{id}
+    </update>
+    <delete id="delete">DELETE FROM accounts WHERE id=#{id}</delete>
+</mapper>
