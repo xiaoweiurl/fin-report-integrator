@@ -24,3 +24,7 @@ frontend/.turbo
 *.zip
 fin-report-integrator-src.zip
 
+
+# local H2 / runtime data
+data/
+

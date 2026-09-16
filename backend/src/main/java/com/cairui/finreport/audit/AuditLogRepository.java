@@ -1,6 +1,15 @@
 package com.cairui.finreport.audit;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
-public interface AuditLogRepository extends JpaRepository<AuditLog, Long> {
+import java.util.List;
+
+@Mapper
+public interface AuditLogRepository {
+    int insert(AuditLog log);
+
+    List<AuditLog> page(@Param("limit") int limit, @Param("offset") int offset);
+
+    long count();
 }

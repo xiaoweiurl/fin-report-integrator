@@ -2,7 +2,7 @@
 
 财务数据导入、清洗校验、科目余额 / 资产负债表 / 利润表，以及银行对账（余额调节表草稿）的演示用 MVP。
 
-界面为中文，视觉按 iOS 人机界面风格实现。后端 Java Spring Boot 3.x，前端 Next.js。
+界面为中文，视觉按 iOS 人机界面风格实现。后端 Spring + Spring MVC + MyBatis（连本地 PostgreSQL），前端 Next.js。
 
 ## 功能（本版本已实现）
 
@@ -16,9 +16,19 @@
 
 ## 如何运行
 
-需 **JDK 21**、**Node.js 20+**。后端已附 Maven Wrapper，不必预先安装 Maven。
+需 **JDK 21**、**Node.js 20+**、本机 **PostgreSQL**。后端已附 Maven Wrapper，不必预先安装 Maven。
 
-### 1. 启动后端（H2 文件库，默认）
+### 1. 初始化 PostgreSQL
+
+```bash
+psql -U postgres -d postgres -f sql/00_create_database.sql
+psql -U postgres -d finreport -f sql/01_schema.sql
+psql -U postgres -d finreport -f sql/02_seed.sql
+```
+
+默认库名 `finreport`。账号密码以你本机 PostgreSQL 为准（配置里默认 `postgres` / `postgres`）。可用环境变量覆盖：`DATABASE_URL`、`DATABASE_USER`、`DATABASE_PASSWORD`。
+
+### 2. 启动后端
 
 ```bash
 cd backend
@@ -26,14 +36,11 @@ cd backend
 ```
 
 服务地址：`http://127.0.0.1:18443`  
-健康检查：`GET /api/health`  
-H2 控制台：`http://127.0.0.1:18443/h2-console`  
-JDBC URL：`jdbc:h2:file:./data/finreport;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH;CASE_INSENSITIVE_IDENTIFIERS=TRUE`  
-用户 `sa`，密码空。
+健康检查：`GET /api/health`
 
-首次启动会写入种子数据：管理员、小企业科目表、往来单位、列映射、报表公式。当前会计期间默认为 **2025-12**。
+首次启动若库中没有用户，会写入管理员 `admin` / `admin123`（BCrypt）。科目、往来、列映射、报表公式以 `sql/02_seed.sql` 为准；若表为空，应用也会补种。当前会计期间默认为 **2025-12**。
 
-### 2. 启动前端
+### 3. 启动前端
 
 ```bash
 cd frontend
@@ -49,7 +56,7 @@ npm run dev
 NEXT_PUBLIC_API_BASE=http://127.0.0.1:18443 npm run dev
 ```
 
-### 3. 演示路径（建议按此点击）
+### 4. 演示路径（建议按此点击）
 
 1. 登录后进入 **导入中心**，期间选 `2025-12`
 2. 导入 `samples/科目余额表-2025-12.xlsx`（类型：科目余额表）
@@ -69,21 +76,6 @@ NEXT_PUBLIC_API_BASE=http://127.0.0.1:18443 npm run dev
 | `会计科目-增补.csv` | 科目主数据增补 |
 | `往来单位.csv` | 往来主数据增补 |
 
-## PostgreSQL 配置
-
-```bash
-cd backend
-./mvnw spring-boot:run -Dspring-boot.run.profiles=postgres
-```
-
-默认连接 `jdbc:postgresql://localhost:5432/finreport`，用户/密码 `finreport`。可用环境变量覆盖：
-
-- `DATABASE_URL`
-- `DATABASE_USER`
-- `DATABASE_PASSWORD`
-
-Flyway 迁移在 `backend/src/main/resources/db/migration/`，H2 与 PostgreSQL 共用同一套 SQL。
-
 ## 默认账户与安全说明
 
 | 项目 | 值 |
@@ -92,13 +84,14 @@ Flyway 迁移在 `backend/src/main/resources/db/migration/`，H2 与 PostgreSQL 
 | 密码 | `admin123` |
 | JWT | 配置于 `backend/src/main/resources/application.yml` 的 `app.jwt.secret` |
 
-演示密钥请勿用于生产。生产环境请更换密钥、使用 PostgreSQL，并关闭 H2 控制台。
+演示密钥请勿用于生产。生产环境请更换 JWT 密钥和数据库密码。
 
 ## 目录结构
 
 ```
-backend/     Spring Boot 3.5、JPA、Flyway、Spring Security
+backend/     Spring Boot 3.5 + Spring MVC + MyBatis + PostgreSQL
 frontend/    Next.js App Router、TypeScript、Tailwind
+sql/         PostgreSQL 建库 / 建表 / 种子数据
 samples/     可直接导入的 Excel / CSV
 ```
 

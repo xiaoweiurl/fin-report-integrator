@@ -1,10 +1,11 @@
 package com.cairui.finreport.audit;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class AuditService {
@@ -22,10 +23,16 @@ public class AuditService {
         row.setEntityId(entityId);
         row.setDetail(detail);
         row.setUsername(username);
-        repo.save(row);
+        repo.insert(row);
     }
 
-    public Page<AuditLog> page(int page, int size) {
-        return repo.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt")));
+    public Map<String, Object> page(int page, int size) {
+        int limit = Math.max(size, 1);
+        int offset = Math.max(page, 0) * limit;
+        List<AuditLog> content = repo.page(limit, offset);
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("content", content);
+        body.put("totalElements", repo.count());
+        return body;
     }
 }
