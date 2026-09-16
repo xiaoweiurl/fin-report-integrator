@@ -59,7 +59,7 @@ public class DataSeeder implements CommandLineRunner {
             admin.setPasswordHash(encoder.encode("admin123"));
             admin.setDisplayName("系统管理员");
             admin.setRole("ADMIN");
-            users.save(admin);
+            users.insert(admin);
         }
         if (accounts.count() == 0) {
             seedAccounts();
@@ -115,7 +115,7 @@ public class DataSeeder implements CommandLineRunner {
         a.setParentCode(parent);
         a.setLevelNo(level);
         a.setEnabled(true);
-        accounts.save(a);
+        accounts.insert(a);
     }
 
     private void seedPartners() {
@@ -132,7 +132,7 @@ public class DataSeeder implements CommandLineRunner {
         p.setName(name);
         p.setPartnerType(type);
         p.setEnabled(true);
-        partners.save(p);
+        partners.insert(p);
     }
 
     private void seedMappings() {
@@ -201,7 +201,7 @@ public class DataSeeder implements CommandLineRunner {
         m.setName(name);
         m.setMappingJson(json);
         m.setIsDefault(true);
-        mappings.save(m);
+        mappings.insert(m);
     }
 
     private void seedReports() {
@@ -307,7 +307,7 @@ public class DataSeeder implements CommandLineRunner {
         l.setFormulaExpr(expr);
         l.setSortOrder(order);
         l.setIndent(indent);
-        lines.save(l);
+        lines.insert(l);
     }
 
     private void f(String type, String line, String account, int mul) {
@@ -316,6 +316,6 @@ public class DataSeeder implements CommandLineRunner {
         f.setLineCode(line);
         f.setAccountCode(account);
         f.setMultiplier(BigDecimal.valueOf(mul));
-        formulas.save(f);
+        formulas.insert(f);
     }
 }
