@@ -101,7 +101,7 @@ public class ImportService {
         batch.setPeriod(period);
         batch.setStatus("PENDING");
         batch.setCreatedBy(username);
-        batches.save(batch);
+        batches.insert(batch);
 
         List<Map<String, String>> rows = FileParseSupport.parse(file, bytes);
         batch.setTotalRows(rows.size());
@@ -167,21 +167,21 @@ public class ImportService {
                     exRow.setRawJson(row.toString());
                 }
                 exRow.setErrorMessage(String.join("; ", errors));
-                exceptions.save(exRow);
+                exceptions.insert(exRow);
             }
         }
 
         if (importType.equals(ACCOUNT_BALANCE) && !balBuf.isEmpty()) {
             balances.deleteByPeriod(period);
-            balances.saveAll(balBuf);
+            balances.insertBatch(balBuf);
         }
         if (importType.equals(BANK_STATEMENT) && !stmtBuf.isEmpty()) {
             statements.deleteByPeriod(period);
-            statements.saveAll(stmtBuf);
+            statements.insertBatch(stmtBuf);
         }
         if (importType.equals(CASH_JOURNAL) && !jourBuf.isEmpty()) {
             journals.deleteByPeriod(period);
-            journals.saveAll(jourBuf);
+            journals.insertBatch(jourBuf);
         }
 
         batch.setSuccessRows(ok);
@@ -210,7 +210,7 @@ public class ImportService {
             batch.setStatus("SUCCESS");
             batch.setMessage("导入成功" + extra);
         }
-        batches.save(batch);
+        batches.update(batch);
         audit.log("IMPORT", importType, String.valueOf(batch.getId()),
                 batch.getFileName() + " " + period + " " + batch.getStatus(), username);
         return batch;
@@ -449,7 +449,11 @@ public class ImportService {
         a.setParentCode(ParseUtil.blankToNull(cell(row, mapping, "parentCode")));
         a.setLevelNo(code.trim().length() <= 4 ? 1 : 2);
         a.setEnabled(true);
-        accounts.save(a);
+        if (a.getId() == null) {
+            accounts.insert(a);
+        } else {
+            accounts.update(a);
+        }
     }
 
     private void upsertPartner(Map<String, String> row, JsonNode mapping, List<String> errors) {
@@ -469,7 +473,11 @@ public class ImportService {
         String t = cell(row, mapping, "partnerType");
         p.setPartnerType(t == null || t.isBlank() ? "OTHER" : t.trim());
         p.setEnabled(true);
-        partners.save(p);
+        if (p.getId() == null) {
+            partners.insert(p);
+        } else {
+            partners.update(p);
+        }
     }
 
     private String inferCategory(String code) {
