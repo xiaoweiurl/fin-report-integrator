@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cairui.finreport.recon.ReconMatchRepository">
+    <select id="findByPeriodOrderByIdAsc" resultType="com.cairui.finreport.recon.ReconMatch">
+        SELECT * FROM recon_matches WHERE period = #{period} ORDER BY id
+    </select>
+    <select id="countByPeriod" resultType="long">
+        SELECT COUNT(*) FROM recon_matches WHERE period = #{period}
+    </select>
+    <delete id="deleteByPeriod">DELETE FROM recon_matches WHERE period = #{period}</delete>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO recon_matches (period, statement_id, journal_id, match_type, amount, date_diff_days, created_at)
+        VALUES (#{period}, #{statementId}, #{journalId}, #{matchType}, #{amount}, COALESCE(#{dateDiffDays},0), COALESCE(#{createdAt}, NOW()))
+    </insert>
+</mapper>

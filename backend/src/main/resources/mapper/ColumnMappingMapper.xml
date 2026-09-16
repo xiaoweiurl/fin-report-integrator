@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cairui.finreport.mapping.ColumnMappingRepository">
+    <resultMap id="mappingMap" type="com.cairui.finreport.mapping.ColumnMapping">
+        <id column="id" property="id"/>
+        <result column="import_type" property="importType"/>
+        <result column="name" property="name"/>
+        <result column="mapping_json" property="mappingJson"/>
+        <result column="is_default" property="isDefault"/>
+    </resultMap>
+    <select id="findAllByOrderByImportTypeAsc" resultMap="mappingMap">
+        SELECT * FROM column_mappings ORDER BY import_type
+    </select>
+    <select id="findById" resultMap="mappingMap">
+        SELECT * FROM column_mappings WHERE id = #{id}
+    </select>
+    <select id="findFirstByImportTypeAndIsDefaultTrue" resultMap="mappingMap">
+        SELECT * FROM column_mappings WHERE import_type = #{importType} AND is_default = TRUE LIMIT 1
+    </select>
+    <select id="count" resultType="long">SELECT COUNT(*) FROM column_mappings</select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO column_mappings (import_type, name, mapping_json, is_default)
+        VALUES (#{importType}, #{name}, #{mappingJson}, COALESCE(#{isDefault}, FALSE))
+    </insert>
+    <update id="update">
+        UPDATE column_mappings SET import_type=#{importType}, name=#{name}, mapping_json=#{mappingJson}, is_default=#{isDefault}
+        WHERE id=#{id}
+    </update>
+</mapper>

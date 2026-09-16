@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cairui.finreport.ledger.CashJournalRepository">
+    <select id="findByPeriodOrderByTxnDateAscIdAsc" resultType="com.cairui.finreport.ledger.CashJournalLine">
+        SELECT * FROM cash_journal_lines WHERE period = #{period} ORDER BY txn_date, id
+    </select>
+    <select id="countByPeriod" resultType="long">
+        SELECT COUNT(*) FROM cash_journal_lines WHERE period = #{period}
+    </select>
+    <delete id="deleteByPeriod">DELETE FROM cash_journal_lines WHERE period = #{period}</delete>
+    <insert id="insertBatch">
+        INSERT INTO cash_journal_lines (batch_id, period, txn_date, amount, direction, account_code, counterparty, summary, voucher_no, matched)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.batchId}, #{item.period}, #{item.txnDate}, #{item.amount}, #{item.direction},
+             #{item.accountCode}, #{item.counterparty}, #{item.summary}, #{item.voucherNo}, COALESCE(#{item.matched}, FALSE))
+        </foreach>
+    </insert>
+    <update id="update">
+        UPDATE cash_journal_lines SET matched = #{matched} WHERE id = #{id}
+    </update>
+</mapper>

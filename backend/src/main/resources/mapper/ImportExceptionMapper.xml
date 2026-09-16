@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cairui.finreport.importdata.ImportExceptionRepository">
+    <select id="findByBatchIdOrderByRowNumberAsc" resultType="com.cairui.finreport.importdata.ImportExceptionRow">
+        SELECT * FROM import_exceptions WHERE batch_id = #{batchId} ORDER BY row_number
+    </select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO import_exceptions (batch_id, row_number, raw_json, error_message)
+        VALUES (#{batchId}, #{rowNumber}, #{rawJson}, #{errorMessage})
+    </insert>
+</mapper>

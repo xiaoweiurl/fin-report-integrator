@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cairui.finreport.report.ReportFormulaRepository">
+    <select id="findByReportType" resultType="com.cairui.finreport.report.ReportFormula">
+        SELECT * FROM report_formulas WHERE report_type = #{reportType}
+    </select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO report_formulas (report_type, line_code, account_code, multiplier)
+        VALUES (#{reportType}, #{lineCode}, #{accountCode}, COALESCE(#{multiplier},1))
+    </insert>
+</mapper>

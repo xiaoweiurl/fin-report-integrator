@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cairui.finreport.master.PartnerRepository">
+    <select id="findAllByOrderByCodeAsc" resultType="com.cairui.finreport.master.Partner">
+        SELECT * FROM partners ORDER BY code
+    </select>
+    <select id="findById" resultType="com.cairui.finreport.master.Partner">
+        SELECT * FROM partners WHERE id = #{id}
+    </select>
+    <select id="findByCode" resultType="com.cairui.finreport.master.Partner">
+        SELECT * FROM partners WHERE code = #{code}
+    </select>
+    <select id="count" resultType="long">SELECT COUNT(*) FROM partners</select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO partners (code, name, partner_type, enabled)
+        VALUES (#{code}, #{name}, #{partnerType}, COALESCE(#{enabled}, TRUE))
+    </insert>
+    <update id="update">
+        UPDATE partners SET code=#{code}, name=#{name}, partner_type=#{partnerType}, enabled=#{enabled}
+        WHERE id=#{id}
+    </update>
+    <delete id="delete">DELETE FROM partners WHERE id=#{id}</delete>
+</mapper>
