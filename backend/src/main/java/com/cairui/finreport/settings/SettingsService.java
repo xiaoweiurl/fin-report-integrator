@@ -30,7 +30,11 @@ public class SettingsService {
             return n;
         });
         s.setValue(value);
-        repo.save(s);
+        if (repo.findById(key).isPresent()) {
+            repo.update(s);
+        } else {
+            repo.insert(s);
+        }
     }
 
     public Map<String, String> all() {

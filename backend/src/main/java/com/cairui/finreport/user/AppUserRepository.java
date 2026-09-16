@@ -1,9 +1,15 @@
 package com.cairui.finreport.user;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Optional;
 
-public interface AppUserRepository extends JpaRepository<AppUser, Long> {
-    Optional<AppUser> findByUsername(String username);
+@Mapper
+public interface AppUserRepository {
+    Optional<AppUser> findByUsername(@Param("username") String username);
+
+    long count();
+
+    int insert(AppUser user);
 }

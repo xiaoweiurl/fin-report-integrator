@@ -1,6 +1,18 @@
 package com.cairui.finreport.settings;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
-public interface AppSettingRepository extends JpaRepository<AppSetting, String> {
+import java.util.List;
+import java.util.Optional;
+
+@Mapper
+public interface AppSettingRepository {
+    Optional<AppSetting> findById(@Param("key") String key);
+
+    List<AppSetting> findAll();
+
+    int insert(AppSetting setting);
+
+    int update(AppSetting setting);
 }
