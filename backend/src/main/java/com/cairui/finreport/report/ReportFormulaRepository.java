@@ -1,9 +1,13 @@
 package com.cairui.finreport.report;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface ReportFormulaRepository extends JpaRepository<ReportFormula, Long> {
-    List<ReportFormula> findByReportType(String reportType);
+@Mapper
+public interface ReportFormulaRepository {
+    List<ReportFormula> findByReportType(@Param("reportType") String reportType);
+
+    int insert(ReportFormula formula);
 }

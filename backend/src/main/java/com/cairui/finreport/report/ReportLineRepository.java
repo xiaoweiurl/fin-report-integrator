@@ -1,9 +1,15 @@
 package com.cairui.finreport.report;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface ReportLineRepository extends JpaRepository<ReportLine, Long> {
-    List<ReportLine> findByReportTypeOrderBySortOrderAsc(String reportType);
+@Mapper
+public interface ReportLineRepository {
+    List<ReportLine> findByReportTypeOrderBySortOrderAsc(@Param("reportType") String reportType);
+
+    long count();
+
+    int insert(ReportLine line);
 }
