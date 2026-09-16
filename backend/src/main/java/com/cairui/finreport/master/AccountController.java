@@ -39,18 +39,18 @@ public class AccountController {
             throw ApiException.badRequest("科目编码已存在: " + req.code());
         }
         Account a = toEntity(new Account(), req);
-        Account saved = repo.save(Objects.requireNonNull(a));
-        audit.log("ACCOUNT_CREATE", "ACCOUNT", saved.getCode(), saved.getName(), auth.getName());
-        return saved;
+        repo.insert(a);
+        audit.log("ACCOUNT_CREATE", "ACCOUNT", a.getCode(), a.getName(), auth.getName());
+        return a;
     }
 
     @PutMapping("/{id}")
     public Account update(@PathVariable Long id, @Valid @RequestBody AccountReq req, Authentication auth) {
         Account a = repo.findById(Objects.requireNonNull(id)).orElseThrow(() -> ApiException.notFound("科目不存在"));
         toEntity(a, req);
-        Account saved = repo.save(Objects.requireNonNull(a));
-        audit.log("ACCOUNT_UPDATE", "ACCOUNT", saved.getCode(), saved.getName(), auth.getName());
-        return saved;
+        repo.update(a);
+        audit.log("ACCOUNT_UPDATE", "ACCOUNT", a.getCode(), a.getName(), auth.getName());
+        return a;
     }
 
     @DeleteMapping("/{id}")

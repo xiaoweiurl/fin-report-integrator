@@ -1,15 +1,19 @@
 package com.cairui.finreport.ledger;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface CashJournalRepository extends JpaRepository<CashJournalLine, Long> {
-    List<CashJournalLine> findByPeriodOrderByTxnDateAscIdAsc(String period);
+@Mapper
+public interface CashJournalRepository {
+    List<CashJournalLine> findByPeriodOrderByTxnDateAscIdAsc(@Param("period") String period);
 
-    long countByPeriod(String period);
+    long countByPeriod(@Param("period") String period);
 
-    @Modifying
-    void deleteByPeriod(String period);
+    int deleteByPeriod(@Param("period") String period);
+
+    int insertBatch(@Param("list") List<CashJournalLine> list);
+
+    int update(CashJournalLine line);
 }

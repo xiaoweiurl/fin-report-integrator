@@ -1,12 +1,28 @@
 package com.cairui.finreport.master;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface AccountRepository extends JpaRepository<Account, Long> {
-    Optional<Account> findByCode(String code);
+@Mapper
+public interface AccountRepository {
+    List<Account> findAll();
+
     List<Account> findAllByOrderByCodeAsc();
-    boolean existsByCode(String code);
+
+    Optional<Account> findById(@Param("id") Long id);
+
+    Optional<Account> findByCode(@Param("code") String code);
+
+    boolean existsByCode(@Param("code") String code);
+
+    long count();
+
+    int insert(Account account);
+
+    int update(Account account);
+
+    int delete(Account account);
 }

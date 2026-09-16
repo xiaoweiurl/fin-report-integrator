@@ -39,8 +39,8 @@ public class ColumnMappingController {
         if (body.containsKey("mappingJson")) {
             m.setMappingJson(body.get("mappingJson"));
         }
-        ColumnMapping saved = repo.save(Objects.requireNonNull(m));
+        repo.update(m);
         audit.log("MAPPING_UPDATE", "MAPPING", String.valueOf(id), m.getImportType(), auth.getName());
-        return saved;
+        return m;
     }
 }
