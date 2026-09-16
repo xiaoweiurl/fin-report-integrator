@@ -1,11 +1,24 @@
 package com.cairui.finreport.master;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface PartnerRepository extends JpaRepository<Partner, Long> {
-    Optional<Partner> findByCode(String code);
+@Mapper
+public interface PartnerRepository {
     List<Partner> findAllByOrderByCodeAsc();
+
+    Optional<Partner> findById(@Param("id") Long id);
+
+    Optional<Partner> findByCode(@Param("code") String code);
+
+    long count();
+
+    int insert(Partner partner);
+
+    int update(Partner partner);
+
+    int delete(Partner partner);
 }

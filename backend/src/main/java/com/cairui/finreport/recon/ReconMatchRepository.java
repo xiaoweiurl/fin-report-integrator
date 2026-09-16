@@ -1,15 +1,17 @@
 package com.cairui.finreport.recon;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface ReconMatchRepository extends JpaRepository<ReconMatch, Long> {
-    List<ReconMatch> findByPeriodOrderByIdAsc(String period);
+@Mapper
+public interface ReconMatchRepository {
+    List<ReconMatch> findByPeriodOrderByIdAsc(@Param("period") String period);
 
-    long countByPeriod(String period);
+    long countByPeriod(@Param("period") String period);
 
-    @Modifying
-    void deleteByPeriod(String period);
+    int deleteByPeriod(@Param("period") String period);
+
+    int insert(ReconMatch match);
 }

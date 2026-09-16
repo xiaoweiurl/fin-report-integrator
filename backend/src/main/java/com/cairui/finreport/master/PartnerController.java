@@ -39,18 +39,18 @@ public class PartnerController {
             throw ApiException.badRequest("往来编码已存在");
         }
         Partner p = toEntity(new Partner(), req);
-        Partner saved = repo.save(Objects.requireNonNull(p));
-        audit.log("PARTNER_CREATE", "PARTNER", saved.getCode(), saved.getName(), auth.getName());
-        return saved;
+        repo.insert(p);
+        audit.log("PARTNER_CREATE", "PARTNER", p.getCode(), p.getName(), auth.getName());
+        return p;
     }
 
     @PutMapping("/{id}")
     public Partner update(@PathVariable Long id, @Valid @RequestBody PartnerReq req, Authentication auth) {
         Partner p = repo.findById(Objects.requireNonNull(id)).orElseThrow(() -> ApiException.notFound("往来单位不存在"));
         toEntity(p, req);
-        Partner saved = repo.save(Objects.requireNonNull(p));
-        audit.log("PARTNER_UPDATE", "PARTNER", saved.getCode(), saved.getName(), auth.getName());
-        return saved;
+        repo.update(p);
+        audit.log("PARTNER_UPDATE", "PARTNER", p.getCode(), p.getName(), auth.getName());
+        return p;
     }
 
     @DeleteMapping("/{id}")
